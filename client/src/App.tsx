@@ -1,10 +1,21 @@
-import io from 'socket.io-client';
 import Game from './components/Game';
+import styled from 'styled-components';
+
+const Wrapper = styled.main`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+`;
 
 function App() {
-  const socket = io('localhost:3000');
-
-  return <Game />
+  return (
+    <Wrapper> 
+      <Game />
+    </Wrapper>
+  );
 }
 
 export default App
