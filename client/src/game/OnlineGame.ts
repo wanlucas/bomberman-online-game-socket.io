@@ -12,46 +12,52 @@ interface Config {
 
 export default class OnlineGame extends Game {
   private socket: Socket;
-  private lastKey: string | null;
-  private playersVelocity: number;
+  private lastKey: string | null = null;
+  private playersVelocity: number = 0;
 
   constructor(context: CanvasRenderingContext2D, size: Size) {
     super(context, size);
 
     this.socket = io("http://localhost:3001");
-    this.lastKey = null;
-    this.playersVelocity = 2;
-    
-    this.socket.on('preload', (payload: { players: Player[], config:  Config }) => {
-      const { players, config } = payload;
-
-      this.playersVelocity = config.playersVelocity;
-
-      players.forEach(({ id, position }: Player) => {
-        this.addPlayer(new Player(id, position, null, this.playersVelocity, context));
-      });
-    });
-
-    this.socket.on('connection', ({ id, position }) => {
-      this.addPlayer(new Player(id, position, null, this.playersVelocity, context));
-    });
-
-    this.socket.on('disconection', (id) => {
-      this.removePlayer(id);
-    });
-
-    this.socket.on('update players', (players: Player[]) => {
-      players.forEach(({ id, position, lastKey }: Player) => {
-        const player = this.players.find((player) => player.id === id);
-
-        if (player) {
-          player.position = position;
-          player.lastKey = lastKey;
-        }
-      });
-    });
-
+    this.addEvents();
     this.addInputs();
+  }
+
+  addEvents() {
+    this.socket.on('preload', (payload) => this.onPreload(payload));
+    this.socket.on('connection', (player) => this.onConnection(player));
+    this.socket.on('disconectionn', (id) => this.onDisconnection(id));
+    this.socket.on('update', (players) => this.onUpdade(players));
+  }
+
+  onPreload({ players, config }: { players: Player[], config: Config }) {
+    this.playersVelocity = config.playersVelocity;
+
+    players.forEach(({ id, position }: Player) => {
+      this.addPlayer(new Player(id, position, null, this.playersVelocity, this.context));
+    });
+  }
+
+  onConnection({ position, id }: Player) {
+    this.addPlayer(
+      new Player(id, position, null, this.playersVelocity, this.context)
+    );
+  }
+
+  onDisconnection(id: string) {
+    this.removePlayer(id);
+  }
+
+  onUpdade(players: Player[]) {
+    console.log(JSON.stringify(players));
+    players.forEach(({ id, position, lastKey }: Player) => {
+      const player = this.players.find((player) => player.id === id);
+
+      if (player) {
+        player.position = position;
+        player.lastKey = lastKey;
+      }
+    });
   }
 
   sendMove() {

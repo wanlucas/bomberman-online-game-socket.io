@@ -11,7 +11,7 @@ export default class Player extends Entity {
     id: string,
     position: Position,
     lastKey: string | null,
-    playerVelocity: number,
+    playersVelocity: number,
     context: CanvasRenderingContext2D,
   ) {
     super(context, position);
@@ -20,8 +20,7 @@ export default class Player extends Entity {
     this.lastKey = lastKey;
     this.width = 10;
     this.height = 20;
-    this.velocity = playerVelocity;
-    console.log(this.lastKey);
+    this.velocity = playersVelocity;
   }
 
   move() {
