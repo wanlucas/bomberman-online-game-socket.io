@@ -10,15 +10,17 @@ export default class Game {
   
   constructor(protected context: CanvasRenderingContext2D, protected size: Size) { }
 
-  addPlayer(player: Player) {
+  protected findPlayerById = (id: string) => this.players.find((player) => player.id === id);
+
+  protected addPlayer(player: Player) {
     this.players.push(player);
   }
 
-  removePlayer(id: string) {
+  protected removePlayer(id: string) {
     this.players = this.players.filter((player) => player.id !== id);
   }
 
-  cleanScreen() {
+  protected cleanScreen() {
     this.context.clearRect(0, 0, this.size.width, this.size.height);
   }
 }

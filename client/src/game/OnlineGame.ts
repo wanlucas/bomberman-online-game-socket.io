@@ -23,14 +23,14 @@ export default class OnlineGame extends Game {
     this.addInputs();
   }
 
-  addEvents() {
+  private addEvents() {
     this.socket.on('preload', (payload) => this.onPreload(payload));
     this.socket.on('connection', (player) => this.onConnection(player));
     this.socket.on('disconectionn', (id) => this.onDisconnection(id));
     this.socket.on('update', (players) => this.onUpdade(players));
   }
 
-  onPreload({ players, config }: { players: Player[], config: Config }) {
+  private onPreload({ players, config }: { players: Player[], config: Config }) {
     this.playersVelocity = config.playersVelocity;
 
     players.forEach(({ id, position }: Player) => {
@@ -38,17 +38,17 @@ export default class OnlineGame extends Game {
     });
   }
 
-  onConnection({ position, id }: Player) {
+  private onConnection({ position, id }: Player) {
     this.addPlayer(
       new Player(id, position, null, this.playersVelocity, this.context)
     );
   }
 
-  onDisconnection(id: string) {
+  private onDisconnection(id: string) {
     this.removePlayer(id);
   }
 
-  onUpdade(players: Player[]) {
+  private onUpdade(players: Player[]) {
     console.log(JSON.stringify(players));
     players.forEach(({ id, position, lastKey }: Player) => {
       const player = this.players.find((player) => player.id === id);
@@ -60,14 +60,20 @@ export default class OnlineGame extends Game {
     });
   }
 
-  sendMove() {
+  private sendMove() {
+    const player = this.findPlayerById(this.socket.id);
+
     this.socket.emit('move', {
       id: this.socket.id,
       move: this.lastKey
     });
+        
+    if (player) {
+      player.lastKey = this.lastKey;
+    }
   }
 
-  addInputs() {
+  private addInputs() {
     const inputs = {
       w: 'top',
       d: 'right',
@@ -76,7 +82,6 @@ export default class OnlineGame extends Game {
     } as Map;
 
     addEventListener('keydown', ({ key }) => {
-      // TO DO - alterar direção de player local imediatamente, antes da resposta do servidor.
       const input = inputs[key];
 
       if (input && input !== this.lastKey) {
@@ -95,7 +100,7 @@ export default class OnlineGame extends Game {
     });
   };
 
-  run() {
+  private run() {
     this.cleanScreen();
     this.players.forEach((player) => player.update());
 
