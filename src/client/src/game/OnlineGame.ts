@@ -18,7 +18,7 @@ export default class OnlineGame extends Game {
   constructor(context: CanvasRenderingContext2D, size: Size) {
     super(context, size);
 
-    this.socket = io("http://localhost:3001");
+    this.socket = io();
     this.addEvents();
     this.addInputs();
   }
@@ -100,7 +100,7 @@ export default class OnlineGame extends Game {
     });
   };
 
-  private run() {
+  public run() {
     this.cleanScreen();
     this.players.forEach((player) => player.update());
 

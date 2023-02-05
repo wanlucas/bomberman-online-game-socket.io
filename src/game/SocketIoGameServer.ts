@@ -22,6 +22,8 @@ export default class SocketIOServerGame extends ServerGame {
   private onConnection(socket: Socket) {
     const player = this.addPlayer(socket.id);
 
+    console.log(`Player ${player.id} connected!`);
+
     socket.broadcast.emit('connection', player);
     socket.emit('preload', { players: this.players, config: this.config });
     socket.on('disconnect', () => this.onDisconnection(socket.id));
