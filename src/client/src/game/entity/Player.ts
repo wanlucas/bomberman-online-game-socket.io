@@ -1,4 +1,5 @@
-import Entity, { Position } from "./Entity";
+import { Position } from "../Game";
+import Entity from "./Entity";
 
 export default class Player extends Entity {
   public readonly id: string;

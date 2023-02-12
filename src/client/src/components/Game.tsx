@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useEffect } from 'react';
-import OnlineGame from '../game/OnlineGame';
+import OnlineGame from '../game/SocketIoOnlineGame';
 
 const Canvas = styled.canvas`
   border: 1px solid white;

@@ -5,6 +5,11 @@ export interface Size {
   height: number;
 }
 
+export interface Position {
+  x: number;
+  y: number;
+}
+
 export default class Game {
   protected players: Player[] = [];
   

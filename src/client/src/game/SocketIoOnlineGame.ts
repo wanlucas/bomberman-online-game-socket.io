@@ -10,7 +10,7 @@ interface Config {
   playersVelocity: number;
 }
 
-export default class OnlineGame extends Game {
+export default class SocketIoOnlineGame extends Game {
   private socket: Socket;
   private lastKey: string | null = null;
   private playersVelocity: number = 0;
