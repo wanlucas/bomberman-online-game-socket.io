@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
 import GameServer, { Config } from "./GameServer";
-import Player from "./Player";
+import Player from "./simulation/Player";
 
 export interface Preload {
   players: Player[];
@@ -46,6 +46,7 @@ export default class SocketIOServerGame extends GameServer {
   public start() {
     this.io.on('connection', (socket) => this.onConnection(socket));
 
+    this.createMap();
     this.runSimulation();
 
     this.tickInt = setInterval(() => {

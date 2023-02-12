@@ -2,7 +2,7 @@ import express from 'express';
 import { Server } from 'socket.io';
 import path from 'path'
 import http from 'http';
-import SocketIOGameServer from './game/SocketIoGameServer';
+import SocketIOGameServer from './game/class/SocketIoGameServer';
 
 const app = express();
 const port = process.env.PORT || 3001;
