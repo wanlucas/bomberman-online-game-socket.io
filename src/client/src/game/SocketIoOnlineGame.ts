@@ -1,6 +1,6 @@
 import io, { Socket } from 'socket.io-client';
 import Player from './entity/Player';
-import Game, { Size } from './Game';
+import Game, { Size, TileMap } from './Game';
 
 interface Map {
   [key: string]: string;
@@ -30,12 +30,14 @@ export default class SocketIoOnlineGame extends Game {
     this.socket.on('update', (players) => this.onUpdade(players));
   }
 
-  private onPreload({ players, config }: { players: Player[], config: Config }) {
+  private onPreload({ players, map, config }: { players: Player[], map: TileMap, config: Config }) {
     this.playersVelocity = config.playersVelocity;
 
     players.forEach(({ id, position }: Player) => {
       this.addPlayer(new Player(id, position, null, this.playersVelocity, this.context));
     });
+
+    this.loadMap(map)
   }
 
   private onConnection({ position, id }: Player) {
@@ -103,6 +105,7 @@ export default class SocketIoOnlineGame extends Game {
   public run() {
     this.cleanScreen();
     this.players.forEach((player) => player.update());
+    this.blocks.forEach((block) => block.update());
 
     requestAnimationFrame(() => this.run());
   }

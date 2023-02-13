@@ -1,7 +1,14 @@
 import { Server, Socket } from "socket.io";
-import ServerGame, { Config } from "./GameServer";
+import GameServer, { Config } from "./GameServer";
+import Player from "./Player";
 
-export default class SocketIOServerGame extends ServerGame {
+export interface Preload {
+  players: Player[];
+  config: Config;
+  map: number[][];
+}
+
+export default class SocketIOServerGame extends GameServer {
   constructor(private io: Server, public config: Config) {
     super(config);
   }
@@ -25,7 +32,7 @@ export default class SocketIOServerGame extends ServerGame {
     console.log(`Player ${player.id} connected!`);
 
     socket.broadcast.emit('connection', player);
-    socket.emit('preload', { players: this.players, config: this.config });
+    socket.emit('preload', { players: this.players, config: this.config, map: this.map } as Preload);
     socket.on('disconnect', () => this.onDisconnection(socket.id));
     socket.on('move', (move) => this.onMove(move));
   }

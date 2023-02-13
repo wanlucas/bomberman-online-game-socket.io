@@ -26,8 +26,8 @@ const gameServer = new SocketIOGameServer(io, {
   refreshRate: 60,
   tickRate: 20,
 });
-
 gameServer.start();
+
 server.listen(port, () => console.log('conectado'));
 
 export default server;

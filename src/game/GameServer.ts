@@ -1,4 +1,7 @@
+import maps from "./maps";
 import Player from "./Player";
+
+export type TileMap = number[][];
 
 export interface Config {
   playersVelocity: number,
@@ -8,6 +11,7 @@ export interface Config {
 
 export default abstract class GameServer {
   public players: Player[] = [];
+  protected map: TileMap = maps[0];
   protected refreshInt: NodeJS.Timeout | null = null;
   protected tickInt: NodeJS.Timeout | null = null;
 
