@@ -1,4 +1,5 @@
 import io, { Socket } from 'socket.io-client';
+import Collision from '../tools/Collision';
 import Player from './entity/Player';
 import Game, { Size, TileMap } from './Game';
 
@@ -27,7 +28,7 @@ export default class SocketIoOnlineGame extends Game {
     this.socket.on('preload', (payload) => this.onPreload(payload));
     this.socket.on('connection', (player) => this.onConnection(player));
     this.socket.on('disconectionn', (id) => this.onDisconnection(id));
-    this.socket.on('update', (players) => this.onUpdade(players));
+    this.socket.on('update', (players) => this.onUpdate(players));
   }
 
   private onPreload({ players, map, config }: { players: Player[], map: TileMap, config: Config }) {
@@ -50,8 +51,7 @@ export default class SocketIoOnlineGame extends Game {
     this.removePlayer(id);
   }
 
-  private onUpdade(players: Player[]) {
-    console.log(JSON.stringify(players));
+  private onUpdate(players: Player[]) {
     players.forEach(({ id, position, lastKey }: Player) => {
       const player = this.players.find((player) => player.id === id);
 
@@ -102,9 +102,21 @@ export default class SocketIoOnlineGame extends Game {
     });
   };
 
+  private updatePlayers() {
+    this.players.forEach((player) => {
+      player.update();
+
+      this.blocks.forEach((block) => {
+        if (Collision.playerXsquare(player, block)) {
+          player.stop();
+        }
+      });
+    });
+  }
+
   public run() {
     this.cleanScreen();
-    this.players.forEach((player) => player.update());
+    this.updatePlayers();
     this.blocks.forEach((block) => block.update());
 
     requestAnimationFrame(() => this.run());

@@ -1,11 +1,9 @@
-import { Position } from "../Game";
+import { Position, Size } from "../Game";
 import Entity from "./Entity";
 
 export default class Player extends Entity {
   public readonly id: string;
-  public width: number;
-  public height: number;
-  public velocity: number;
+  public size: Size;
   public lastKey: string | null;
 
   constructor(
@@ -19,33 +17,45 @@ export default class Player extends Entity {
 
     this.id = id;
     this.lastKey = lastKey;
-    this.width = 10;
-    this.height = 20;
-    this.velocity = playersVelocity;
-  }
-
-  move() {
-    if (this.lastKey === 'top') {
-      this.position.y -= this.velocity;
-    } else if (this.lastKey === 'right') {
-      this.position.x += this.velocity;
-    } else if (this.lastKey === 'down') {
-      this.position.y += this.velocity;
-    } else if (this.lastKey === 'left') {
-      this.position.x -= this.velocity;
+    this.velocity.max = playersVelocity,
+    this.size = {
+      width: 10,
+      height: 20,
     }
   }
 
-  draw() {
+  public stop() {
+    this.velocity.x = 0;
+    this.velocity.y = 0;
+  }
+
+  private move() {
+    this.position.x += this.velocity.x;
+    this.position.y += this.velocity.y;
+    
+    this.stop();
+
+    if (this.lastKey === 'top') {
+      this.velocity.y = -this.velocity.max;
+    } else if (this.lastKey === 'right') {
+      this.velocity.x = this.velocity.max;
+    } else if (this.lastKey === 'down') {
+      this.velocity.y = this.velocity.max;
+    } else if (this.lastKey === 'left') {
+      this.velocity.x = -this.velocity.max;
+    }
+  }
+
+  private draw() {
     this.context.fillRect(
       this.position.x,
       this.position.y,
-      this.width,
-      this.height
+      this.size.width,
+      this.size.height,
     );
   }
 
-  update() {
+  public update() {
     this.move();
     this.draw();
   }
